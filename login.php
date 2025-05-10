@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'core/connection.php';
+require 'core/auth.php';
 
 if (isset($_SESSION['id'])) {
   header("Location: index.php");
@@ -9,19 +10,18 @@ if (isset($_SESSION['id'])) {
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $email = $_POST['email'];
-  $password = $_POST['password'];
+  $email = trim($_POST['email']);
+  $password = trim($_POST['password']);
 
-  $sql = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
-  $result = $conn->query($sql);
-
-  if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $_SESSION['id'] = $row['id'];
-    $_SESSION['username'] = $row['username'];
-    header("Location: index.php");
+  if (!empty($email) && !empty($password)) {
+    if (login($email, $password)) {
+      header("Location: index.php");
+      exit;
+    } else {
+      $error = "Email atau password salah";
+    }
   } else {
-    $error = "Email atau password salah";
+    $error = "Email dan password harus diisi";
   }
 }
 
@@ -119,10 +119,12 @@ https://templatemo.com/tm-586-scholar
                     <input type="password" name="password" id="password" placeholder="Kata Sandi" required>
                   </fieldset>
                 </div>
-                <button type="submit" id="form-submit" class="orange-button mb-3">Login</button> <br><br> <br>
-                <a href="register.php"><button type="submit" id="form-submit" class="orange-button">Register</a></button>
+                <button type="submit" id="form-submit" class="orange-button">Login</button> <br><br> <br>
               </div>
             </form>
+            <div class="row">
+              <a href="register.php" class="m-auto mt-3 text-white">Don't Have Account? Register Here</a>
+            </div>
           </div>
         </div>
       </div>

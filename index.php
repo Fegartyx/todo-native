@@ -1,3 +1,12 @@
+<?php
+session_start();
+require 'core/connection.php';
+require 'core/auth.php';
+
+$query = "SELECT * FROM kelas";
+$result = mysqli_query($koneksi, $query);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,7 +68,11 @@ https://templatemo.com/tm-586-scholar
             <ul class="nav">
               <li class="scroll-to-section"><a href="#top" class="active">Beranda</a></li>
               <li class="scroll-to-section"><a href="#courses">Kelas</a></li>
-              <li class="scroll-to-section"><a href="login.php">Login</a></li>
+              <?php if (!isset($_SESSION['id_user'])) { ?>
+                <li class="scroll-to-section"><a href="login.php">Login</a></li>
+              <?php } else { ?>
+                <li class="scroll-to-section"><a href="logout.php">Logout</a></li>
+              <?php } ?>
             </ul>
             <a class='menu-trigger'>
               <span>Menu</span>
@@ -112,45 +125,33 @@ https://templatemo.com/tm-586-scholar
       </div>
 
       <div class="row event_box">
-        <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 design">
-          <div class="events_item">
-            <div class="thumb">
-              <a href="tiu.html"><img src="assets/images/course-01.jpg" alt=""></a>
-              <span class="category">TIU</span>
+        <?php if (!empty($result)) : ?>
+          <?php foreach ($result as $row) : ?>
+            <?php
+            $nama = strtolower($row['nama']);
+            $gambarMap = [
+              'tiu' => 'course-01.jpg',
+              'twk' => 'course-02.jpg',
+              'tkp' => 'course-03.jpg',
+            ];
+
+            $gambar = $gambarMap[$nama];
+            ?>
+            <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 design">
+              <div class="events_item">
+                <div class="thumb">
+                  <a href="<?php echo strtolower($row['nama']); ?>.html"><img src="assets/images/<?php echo htmlspecialchars($gambar); ?>" alt=""></a>
+                  <span class="category">TIU</span>
+                </div>
+                <div class="down-content"> <br>
+                  <a href="<?php echo htmlspecialchars($nama); ?>.html">
+                    <h4>Tes Intelegensi Umum</h4>
+                  </a>
+                </div>
+              </div>
             </div>
-            <div class="down-content"> <br>
-              <a href="tiu.html">
-                <h4>Tes Intelegensi Umum</h4>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6  development">
-          <div class="events_item">
-            <div class="thumb">
-              <a href="#"><img src="assets/images/course-02.jpg" alt=""></a>
-              <span class="category">TWK</span>
-            </div>
-            <div class="down-content">
-              <a href="twk.html">
-                <h4>Tes Wawasan Kebangsaan</h4>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 align-self-center mb-30 event_outer col-md-6 design wordpress">
-          <div class="events_item">
-            <div class="thumb">
-              <a href="#"><img src="assets/images/course-03.jpg" alt=""></a>
-              <span class="category">TKP</span>
-            </div>
-            <div class="down-content"> <br>
-              <a href="tkp.html">
-                <h4>Tes Kepribadian</h4>
-              </a>
-            </div>
-          </div>
-        </div>
+          <?php endforeach ?>
+        <?php endif ?>
 
       </div>
     </div>
