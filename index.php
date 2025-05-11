@@ -141,11 +141,11 @@ https://templatemo.com/tm-586-scholar
               <div class="events_item">
                 <div class="thumb">
                   <a href="<?php echo strtolower($row['nama']); ?>.html"><img src="assets/images/<?php echo htmlspecialchars($gambar); ?>" alt=""></a>
-                  <span class="category">TIU</span>
+                  <span class="category"><?= htmlspecialchars($nama); ?></span>
                 </div>
                 <div class="down-content"> <br>
-                  <a href="<?php echo htmlspecialchars($nama); ?>.html">
-                    <h4>Tes Intelegensi Umum</h4>
+                  <a href="<?php echo htmlspecialchars($nama); ?>.php">
+                    <h4><?= htmlspecialchars($row['deskripsi']); ?></h4>
                   </a>
                 </div>
               </div>
